@@ -6,6 +6,7 @@
 - Structured pages using a folder-per-page pattern with index.tsx entry points, which is my usual approach for scalable React projects. It keeps imports clean, allows each page to grow independently and avoids naming collisions.
 - Always using arrow functions and destructure of the props (if used) for better code reading and understanding.
 - Using react-router-dom with a root layout (App) and nested routes.
+- Chose Zustand for global state management over React Context or Redux. The quiz answers need to survive navigation from the quiz page to the results page — a single shared store with a flat answers object is the simplest solution. Zustand has no boilerplate, no providers to wrap, and its bundle footprint is minimal, which fits the scope of this project.
 
 ## Question Improvements
 
@@ -21,6 +22,14 @@ Originally, "rarely" and "sometimes" answers to the luggage question produced no
 ### Added fuel type question
 A seventh question was added — "Que tipo de combustível preferes?" with options Gasolina / Diesel / Indiferente. Fuel type is a hard filter, not a scoring signal (see Matching Engine section below). "Indiferente" skips the filter entirely, leaving all fuel types in the pool.
 
+### Added maximum mileage question
+An eighth question was added — "Número máximo de quilómetros" — as a hard filter on `mileage_km`. Like budget, it is optional: if the user does not select a value, no filter is applied. The option "100 000+ km" stores the sentinel value 999999, which effectively disables the filter since no car in the dataset exceeds it. This question was implemented as a dropdown for the same reasons as budget (see question ordering section below).
+
+### Question ordering: technical filters first, usage profile second
+The final question order diverges from the original brief. Budget, mileage, fuel, and gearbox come first; passengers, luggage, and priority come last. The reasoning: the first four are hard decision-breakers — a user who cannot go above €16 000 or only wants diesel has already eliminated most of the dataset before any preference scoring. Starting with these filters sets honest expectations early and avoids the user investing time in preference questions only to see the pool collapse at the end.
+
+The two technical filters with discrete, familiar ranges (budget and mileage) use dropdowns instead of pill selectors. Both mirror the interaction pattern users already know from car listing sites (AutoScout24, Mobile.de, OLX), where price and km ranges are always dropdowns. This lowers cognitive friction and leverages muscle memory — the user does not need to learn a new UI pattern for the most familiar filters.
+
 ## Matching Engine
 
 The matching runs in two stages after the user submits the quiz.
@@ -28,12 +37,13 @@ The matching runs in two stages after the user submits the quiz.
 ### Stage 1 — Hard filters
 Hard filters eliminate cars that cannot satisfy a hard requirement. A car that fails a filter never appears in results, regardless of how well it scores on other dimensions.
 
-Three hard filters are applied in order:
-1. **Budget** — removes cars where `price_eur > budget` (only applied if the user entered a value above zero)
-2. **Gearbox** — if the user picked Manual or Automática, only cars with the corresponding tag survive; Indiferente skips this filter
-3. **Fuel** — if the user picked Gasolina or Diesel, only cars with the matching `fuel` field survive; Indiferente skips this filter
+Four hard filters are applied in order:
+1. **Budget** — removes cars where `price_eur > budget` (skipped if not selected)
+2. **Mileage** — removes cars where `mileage_km > maxMileage` (skipped if not selected)
+3. **Gearbox** — if the user picked Manual or Automática, only cars with the corresponding tag survive; Indiferente skips this filter
+4. **Fuel** — if the user picked Gasolina or Diesel, only cars with the matching `fuel` field survive; Indiferente skips this filter
 
-Filters stack: picking Diesel + Manual leaves only diesel manual cars in the pool before scoring begins.
+Filters stack: picking Diesel + Manual + budget of €20 000 leaves only diesel manual cars under €20 000 in the pool before scoring begins.
 
 ### Stage 2 — Tag scoring with contradiction penalty
 Each answer (except budget, gearbox, and fuel, which are handled by filters) maps to two tag lists: desired tags and contradiction tags.

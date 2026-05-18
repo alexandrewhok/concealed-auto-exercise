@@ -29,6 +29,36 @@ import {
   TotalPrice,
 } from "./styles";
 
+const TAG_PHRASES: Record<string, string> = {
+  compact: "dimensão compacta",
+  "mid-size": "dimensão intermédia",
+  large: "dimensão generosa",
+  urban: "vocação urbana",
+  mixed: "versatilidade mista",
+  "long-distance": "aptidão para longa distância",
+  cargo: "capacidade de carga",
+  "solo-couple": "perfil individual ou a dois",
+  family: "perfil familiar",
+  economy: "economia de consumo",
+  comfort: "conforto de condução",
+  premium: "equipamento premium",
+  manual: "caixa manual",
+  automatic: "caixa automática",
+};
+
+function buildMatchSentence(matchedTags: string[]): string {
+  const phrases = [...new Set(matchedTags)]
+    .map((t) => TAG_PHRASES[t])
+    .filter(Boolean);
+
+  if (phrases.length === 0) return "Este carro corresponde aos teus critérios de pesquisa.";
+  if (phrases.length === 1) return `Identificámos este carro pela sua ${phrases[0]}.`;
+
+  const last = phrases[phrases.length - 1];
+  const rest = phrases.slice(0, -1);
+  return `Identificámos este carro pela sua ${rest.join(", ")} e ${last}.`;
+}
+
 const formatEUR = (value: number) =>
   new Intl.NumberFormat("pt-PT", {
     style: "currency",
@@ -50,7 +80,7 @@ const ResultCard = ({ match, costs }: ResultCardProps) => {
         <InfoSection>
           <CarTitle>{car.make} {car.model}</CarTitle>
 
-          <MatchLabel>Este é o carro ideal porque encaixa nestas categorias que escolheste:</MatchLabel>
+          <MatchLabel>{buildMatchSentence(matchedTags)}</MatchLabel>
           <MatchedTagsRow>
             {uniqueMatchedTags.map((tag) => (
               <MatchedTag key={tag}>{tag}</MatchedTag>

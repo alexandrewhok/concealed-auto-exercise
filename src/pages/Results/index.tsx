@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { ButtonTypes } from "../../components/Button/models";
 import ResultCard from "../../components/ResultCard";
@@ -23,6 +23,10 @@ const Results = () => {
   const navigate = useNavigate();
   const answers = useQuizStore((s) => s.answers);
   const matches = useMemo(() => matchCars(answers), [answers]);
+
+  if (Object.keys(answers).length === 0) {
+    return <Navigate to="/quiz" replace />;
+  }
 
   const answerLabels = QUESTIONS
     .filter((q) => answers[q.id as keyof typeof answers] !== undefined)
