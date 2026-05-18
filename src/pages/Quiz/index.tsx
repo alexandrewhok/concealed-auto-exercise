@@ -7,12 +7,19 @@ import type { QuizAnswers } from "./models";
 import { QUESTIONS } from "./constants";
 import { Content, ScrollArea, Title, Wrapper } from "./styles";
 
-const MANDATORY_IDS = QUESTIONS.filter((q) => q.id !== "budget").map((q) => q.id);
+const MANDATORY_IDS = QUESTIONS.filter((q) => q.type !== "select").map((q) => q.id);
 
 const Quiz = () => {
   const navigate = useNavigate();
-  const setAnswer = useQuizStore((s) => s.setAnswer);
-  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const { setAnswer, answers: storedAnswers } = useQuizStore((s) => s);
+
+  const [answers, setAnswers] = useState<Record<string, string>>(() => {
+    const initial: Record<string, string> = {};
+    for (const [id, value] of Object.entries(storedAnswers)) {
+      if (value !== undefined) initial[id] = String(value);
+    }
+    return initial;
+  });
 
   const allAnswered = MANDATORY_IDS.every((id) => answers[id] !== undefined);
 
@@ -22,7 +29,7 @@ const Quiz = () => {
 
   const handleSubmit = () => {
     for (const [id, value] of Object.entries(answers)) {
-      if (id === "budget") {
+      if (id === "budget" || id === "maxMileage") {
         setAnswer(id as keyof QuizAnswers, Number(value));
       } else {
         setAnswer(id as keyof QuizAnswers, value);

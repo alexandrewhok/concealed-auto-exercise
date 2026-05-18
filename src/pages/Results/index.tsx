@@ -2,15 +2,34 @@ import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/Button";
 import { ButtonTypes } from "../../components/Button/models";
+import ResultCard from "../../components/ResultCard";
+import { QUESTIONS } from "../Quiz/constants";
 import { useQuizStore } from "../../store/quizStore";
-import { matchCars } from "../../utils/matching";
 import { calcBreakdown } from "../../utils/costs";
-import { EmptyMessage, EmptyState, Wrapper } from "./styles";
+import { matchCars } from "../../utils/matching";
+import {
+  AnswersSummary,
+  Content,
+  EmptyMessage,
+  EmptyState,
+  Header,
+  ScrollArea,
+  Subtitle,
+  Title,
+  Wrapper,
+} from "./styles";
 
 const Results = () => {
   const navigate = useNavigate();
   const answers = useQuizStore((s) => s.answers);
   const matches = useMemo(() => matchCars(answers), [answers]);
+
+  const answerLabels = QUESTIONS
+    .filter((q) => answers[q.id as keyof typeof answers] !== undefined)
+    .map((q) => {
+      const value = String(answers[q.id as keyof typeof answers]);
+      return q.options.find((o) => o.value === value)?.label ?? value;
+    });
 
   if (matches.length === 0) {
     return (
@@ -31,21 +50,24 @@ const Results = () => {
     );
   }
 
-  console.log("Quiz answers:", answers);
-  console.log(
-    "Top 3 matches:",
-    matches.map((m) => ({
-      car: `${m.car.make} ${m.car.model}`,
-      score: m.score,
-      matchedTags: m.matchedTags,
-      contradictedTags: m.contradictedTags,
-      costs: calcBreakdown(m.car),
-    }))
-  );
-
   return (
     <Wrapper>
-      <h1>Results</h1>
+      <ScrollArea>
+        <Content>
+          <Header>
+            <Title>Os teus resultados</Title>
+            <Subtitle>Com base nas tuas opções:</Subtitle>
+            <AnswersSummary>{answerLabels.join(" · ")}</AnswersSummary>
+          </Header>
+          {matches.map((match) => (
+            <ResultCard
+              key={match.car.id}
+              match={match}
+              costs={calcBreakdown(match.car)}
+            />
+          ))}
+        </Content>
+      </ScrollArea>
     </Wrapper>
   );
 };

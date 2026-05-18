@@ -79,6 +79,10 @@ export function matchCars(answers: Partial<QuizAnswers>): MatchResult[] {
     pool = pool.filter((c) => c.price_eur <= answers.budget!);
   }
 
+  if (answers.maxMileage && answers.maxMileage > 0) {
+    pool = pool.filter((c) => c.mileage_km <= answers.maxMileage!);
+  }
+
   if (answers.gearbox === "manual") {
     pool = pool.filter((c) => c.tags.includes("manual"));
   } else if (answers.gearbox === "automatic") {

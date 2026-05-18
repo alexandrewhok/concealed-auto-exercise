@@ -18,4 +18,5 @@ export type QuizAnswers = {
   gearbox: "manual" | "automatic" | "either";
   fuel: "gasoline" | "diesel" | "either";
   budget: number;
+  maxMileage: number;
 };
