@@ -124,6 +124,8 @@ Claude Code was introduced as a technical extension once the base application wa
 - **Results component** — the base card structure was built manually, then Claude Code was used to iterate on layout refinements and detail adjustments based on explicit feedback.
 - **Empty state behaviour** — when no results are found, the decision to return the user to the quiz with their answers already filled in was deliberately specified. The intent was to let the user adjust specific filters without having to restart the form from scratch — a UX detail that was manually designed and then implemented through directed instruction.
 
+Claude Code also assisted in one specific commit organisation task: at a point where ~25 files had accumulated as uncommitted changes, it was asked to split them into smaller, focused commits grouped by concern (UI vs logic vs documentation). This follows standard good practice — smaller commits scoped to a single responsibility make rollbacks surgical rather than destructive.
+
 AI was deliberately not used for architectural decisions, the initial project setup, the design system, or anything where the reasoning behind the choice mattered as much as the output itself.
 
 ## Deployment Workflow
@@ -132,4 +134,5 @@ AI was deliberately not used for architectural decisions, the initial project se
 - Pull Requests generate preview deployments, allowing quick validation of UI changes.
 - This setup ensures fast feedback loops and mirrors a real-world CI/CD workflow.
 - Added a Netlify `_redirects` file to support client-side routing. Without this, direct navigation to routes like `/results` would fail on Netlify.
+- As the sole developer on this project, all commits were pushed directly to `main`. Each commit was kept small and descriptive to compensate for the absence of a pull request review step. In a team context, a feature branch and a merge request would be the standard approach before merging into `main`, ensuring code review and a clean rollback point if needed.
 
