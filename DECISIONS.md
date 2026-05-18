@@ -82,6 +82,50 @@ Each answer (except budget, gearbox, and fuel, which are handled by filters) map
 
 Cars are sorted by score descending. The top 3 are returned as recommendations.
 
+## UI Decisions
+
+### Quiz presentation
+The quiz is a single scrollable page rather than a paginated multi-step flow. The main reason is directness: the user can see all questions at once, scroll back to change an answer, and understand the full scope of what is being asked before committing. A step-by-step wizard would add navigation overhead and make it harder to revisit earlier answers. The "Ver recomendações" button is disabled until all mandatory questions are answered, so the single-page approach does not sacrifice guidance.
+
+Qualitative questions (passengers, luggage, priority, fuel, gearbox) use pill selectors — one tap, immediate visual feedback, no dropdowns to open. Quantitative range questions (budget, mileage) use native dropdowns, matching the interaction pattern of car listing platforms the target audience already uses.
+
+### Results presentation
+Results are three cards stacked vertically in a scrollable column. Each card is self-contained: photo, match explanation, full tag row, vehicle details, marketplace link, and cost breakdown toggle — all the information the user needs to evaluate a recommendation without leaving the page.
+
+The cost breakdown is collapsed by default under a "Preço Chave na Mão" toggle. This keeps the initial view clean and focuses attention on the recommendation itself. Expanding the toggle reveals each cost component (ISV, transport, legalization) as individual rows, with IUC called out separately as an annual recurring cost. The distinction between one-off and recurring costs is deliberate — it is the kind of transparency that builds trust with a user who is suspicious of the import process.
+
+### Justifying the recommendation
+Each card opens with a natural language sentence derived from the matched tags — e.g. "Identificámos este carro pela sua dimensão intermédia, conforto de condução e versatilidade mista." — instead of a percentage score or a generic phrase. The full tag row below shows all car tags, with matched ones highlighted and unmatched ones dimmed, so the user can verify the reasoning at a glance. This directly addresses the brief's requirement: the justification must be linked to the user's own answers, not an opaque number.
+
+The results page also shows an answer summary ("Com base nas tuas opções: …") so the user always has context for why these specific three cars were selected.
+
+## What I would deliver with 8 more hours / cut with 4 less
+
+### With 8 more hours
+- **Internationalisation** — add English as a second language option alongside Portuguese, with a language toggle in the navbar. The UI copy is already isolated in constants and component strings, so the wiring would be straightforward.
+- **Micro-UX polish** — better spacing and rhythm across the quiz questions, subtle animations on card reveal in the results page, and a slightly more "alive" visual feel overall (hover states, transitions).
+- **Confirmation modals** — a "Tem a certeza que quer sair? O questionário será perdido." modal when the user clicks Cancelar, and a "Verifique as suas respostas antes de continuar." summary before submitting, to reduce accidental navigation and give the user one last chance to review.
+- **More precise fiscal calculation** — research the current official ISV tables from the Portal das Finanças rather than the simplified bracket approximations provided in the brief, and cover edge cases for hybrid vehicles.
+- **Improved matching** — weighted scoring based on question importance rather than flat tag counts, and a fallback relaxation strategy when hard filters reduce the pool below three cars.
+
+### With only 4 hours
+- **Skip the theme and styling detail** — use a minimal CSS reset and basic layout without the custom theme system, component-level style files, or the design polish on OptionTag, ResultCard, and the cost toggle.
+- **Fewer question adjustments** — ship the original six questions from the brief without the ordering rethink, the luggage tag expansion, or the additional fuel and mileage questions. The matching engine is where the evaluation weight sits, so that is where the limited time would go.
+- **Maximum focus on matching and costs** — the hard filter + tag scoring model and the fiscal calculator are the two things the evaluators scrutinise most. With a tight constraint, everything else is secondary.
+
+## AI Tools
+
+The project was structured manually from the ground up: folder architecture, base pages, theme system, global and reset styles, base components, and Netlify pipeline setup were all done without AI assistance. The same applies to the initial routing configuration and the styled-components foundation.
+
+Claude Code was introduced as a technical extension once the base application was in place. Its use was directed and specific:
+
+- **Fiscal calculator** — the annex formulas were passed directly and the implementation steps were specified explicitly. The output was verified against the bracket tables.
+- **Matching engine** — the Zustand approach was decided upfront. The tag mapping strategy, question ordering rationale, and the decision to expand tags so that a single answer can produce multiple tag signals (increasing match resolution) were all defined before delegation.
+- **Results component** — the base card structure was built manually, then Claude Code was used to iterate on layout refinements and detail adjustments based on explicit feedback.
+- **Empty state behaviour** — when no results are found, the decision to return the user to the quiz with their answers already filled in was deliberately specified. The intent was to let the user adjust specific filters without having to restart the form from scratch — a UX detail that was manually designed and then implemented through directed instruction.
+
+AI was deliberately not used for architectural decisions, the initial project setup, the design system, or anything where the reasoning behind the choice mattered as much as the output itself.
+
 ## Deployment Workflow
 - Configured automatic deployments using Netlify connected to the GitHub repository.
 - Every push to the main branch triggers a build (`pnpm build`) and deploy to production.
