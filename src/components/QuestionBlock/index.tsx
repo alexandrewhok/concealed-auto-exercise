@@ -1,15 +1,11 @@
-import type { Question } from "../../pages/Quiz/models";
 import Dropdown from "../Dropdown";
 import OptionTag from "../OptionTag";
+import type { QuestionBlockProps } from "./models";
 import { OptionsRow, Wrapper } from "./tyles";
 
-type Props = {
-  question: Question;
-  selectedValue?: string;
-  onSelect?: (value: string) => void;
-};
+const QuestionBlock = (props: QuestionBlockProps) => {
+  const { question, selectedValue, onSelect } = props;
 
-const QuestionBlock = ({ question, selectedValue, onSelect }: Props) => {
   return (
     <Wrapper>
       <h6>{question.title}</h6>

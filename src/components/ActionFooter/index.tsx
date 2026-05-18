@@ -4,7 +4,13 @@ import type { ActionFooterProps } from "./models";
 import { Footer } from "./styles";
 
 const ActionFooter = (props: ActionFooterProps) => {
-  const { cancelLabel = "Cancelar", confirmLabel, confirmDisabled, onCancel, onConfirm } = props;
+  const {
+    cancelLabel = "Cancelar",
+    confirmLabel,
+    confirmDisabled,
+    onCancel,
+    onConfirm,
+  } = props;
 
   return (
     <Footer>

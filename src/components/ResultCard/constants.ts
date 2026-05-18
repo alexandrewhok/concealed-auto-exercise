@@ -1,0 +1,16 @@
+export const TAG_PHRASES: Record<string, string> = {
+  compact: "dimensão compacta",
+  "mid-size": "dimensão intermédia",
+  large: "dimensão generosa",
+  urban: "vocação urbana",
+  mixed: "versatilidade mista",
+  "long-distance": "aptidão para longa distância",
+  cargo: "capacidade de carga",
+  "solo-couple": "perfil individual ou a dois",
+  family: "perfil familiar",
+  economy: "economia de consumo",
+  comfort: "conforto de condução",
+  premium: "equipamento premium",
+  manual: "caixa manual",
+  automatic: "caixa automática",
+};

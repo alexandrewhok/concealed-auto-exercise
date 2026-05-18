@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ResultCardProps } from "./models";
+import { buildMatchSentence, formatEUR } from "./utils";
 import {
   Arrow,
   BreakdownLabel,
@@ -26,47 +27,13 @@ import {
   MatchedTagsRow,
   Tag,
   TagsRow,
+  TotalLabel,
   TotalPrice,
+  TotalValue,
 } from "./styles";
 
-const TAG_PHRASES: Record<string, string> = {
-  compact: "dimensão compacta",
-  "mid-size": "dimensão intermédia",
-  large: "dimensão generosa",
-  urban: "vocação urbana",
-  mixed: "versatilidade mista",
-  "long-distance": "aptidão para longa distância",
-  cargo: "capacidade de carga",
-  "solo-couple": "perfil individual ou a dois",
-  family: "perfil familiar",
-  economy: "economia de consumo",
-  comfort: "conforto de condução",
-  premium: "equipamento premium",
-  manual: "caixa manual",
-  automatic: "caixa automática",
-};
-
-function buildMatchSentence(matchedTags: string[]): string {
-  const phrases = [...new Set(matchedTags)]
-    .map((t) => TAG_PHRASES[t])
-    .filter(Boolean);
-
-  if (phrases.length === 0) return "Este carro corresponde aos teus critérios de pesquisa.";
-  if (phrases.length === 1) return `Identificámos este carro pela sua ${phrases[0]}.`;
-
-  const last = phrases[phrases.length - 1];
-  const rest = phrases.slice(0, -1);
-  return `Identificámos este carro pela sua ${rest.join(", ")} e ${last}.`;
-}
-
-const formatEUR = (value: number) =>
-  new Intl.NumberFormat("pt-PT", {
-    style: "currency",
-    currency: "EUR",
-    maximumFractionDigits: 0,
-  }).format(value);
-
-const ResultCard = ({ match, costs }: ResultCardProps) => {
+const ResultCard = (props: ResultCardProps) => {
+  const { match, costs } = props;
   const { car, matchedTags } = match;
   const [open, setOpen] = useState(false);
   const matchedSet = new Set(matchedTags);
@@ -78,7 +45,9 @@ const ResultCard = ({ match, costs }: ResultCardProps) => {
         <CarImage src={car.photo_url} alt={`${car.make} ${car.model}`} />
 
         <InfoSection>
-          <CarTitle>{car.make} {car.model}</CarTitle>
+          <CarTitle>
+            {car.make} {car.model}
+          </CarTitle>
 
           <MatchLabel>{buildMatchSentence(matchedTags)}</MatchLabel>
           <MatchedTagsRow>
@@ -96,14 +65,31 @@ const ResultCard = ({ match, costs }: ResultCardProps) => {
           </TagsRow>
 
           <CarDetails>
-            <DetailItem>Ano: <strong>{car.year}</strong></DetailItem>
-            <DetailItem>Quilómetros: <strong>{car.mileage_km.toLocaleString("pt-PT")} km</strong></DetailItem>
-            <DetailItem>Transmissão: <strong>{car.transmission === "manual" ? "Manual" : "Automática"}</strong></DetailItem>
-            <DetailItem>Combustível: <strong>{car.fuel === "gasoline" ? "Gasolina" : "Diesel"}</strong></DetailItem>
+            <DetailItem>
+              Ano: <strong>{car.year}</strong>
+            </DetailItem>
+            <DetailItem>
+              Quilómetros:{" "}
+              <strong>{car.mileage_km.toLocaleString("pt-PT")} km</strong>
+            </DetailItem>
+            <DetailItem>
+              Transmissão:{" "}
+              <strong>
+                {car.transmission === "manual" ? "Manual" : "Automática"}
+              </strong>
+            </DetailItem>
+            <DetailItem>
+              Combustível:{" "}
+              <strong>{car.fuel === "gasoline" ? "Gasolina" : "Diesel"}</strong>
+            </DetailItem>
           </CarDetails>
 
-          <MarketplaceLink href={car.marketplace_url} target="_blank" rel="noopener noreferrer">
-            Ver o anúncio →
+          <MarketplaceLink
+            href={car.marketplace_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Ver o anúncio
           </MarketplaceLink>
         </InfoSection>
       </CardTop>
@@ -135,14 +121,11 @@ const ResultCard = ({ match, costs }: ResultCardProps) => {
               <BreakdownLabel>Legalização</BreakdownLabel>
               <BreakdownValue>{formatEUR(costs.legalization)}</BreakdownValue>
             </BreakdownRow>
-
             <Divider />
-
             <BreakdownRow>
-              <BreakdownLabel style={{ fontWeight: 600, color: "inherit" }}>Total</BreakdownLabel>
-              <BreakdownValue style={{ fontWeight: 700 }}>{formatEUR(costs.total)}</BreakdownValue>
+              <TotalLabel>Total</TotalLabel>
+              <TotalValue>{formatEUR(costs.total)}</TotalValue>
             </BreakdownRow>
-
             <IUCNote>
               <IUCLabel>IUC anual (custo recorrente)</IUCLabel>
               <IUCValue>{formatEUR(costs.iucAnnual)}</IUCValue>

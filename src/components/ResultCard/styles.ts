@@ -181,6 +181,15 @@ export const BreakdownValue = styled.span`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
+export const TotalLabel = styled(BreakdownLabel)`
+  font-weight: 600;
+  color: inherit;
+`;
+
+export const TotalValue = styled(BreakdownValue)`
+  font-weight: 700;
+`;
+
 export const Divider = styled.div`
   height: 1px;
   background-color: ${({ theme }) => `${theme.colors.secondary}4D`};
