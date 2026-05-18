@@ -122,12 +122,12 @@ export const StyledButton = styled.button<{ $type: ButtonTypes }>`
     justify-content: center;
     gap: 8px;
 
-    padding: 12px 20px;
+    padding: 9px 12px;
     border-radius: 8px;
     border-width: 1px;
     border-style: solid;
 
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 600;
     cursor: pointer;
 

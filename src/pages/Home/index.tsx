@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import Button from "../../components/Button";
 import { ButtonTypes } from "../../components/Button/models";
-import { Header, Wrapper } from "./styles";
+import { Header, StyledButton, Wrapper } from "./styles";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -15,7 +14,7 @@ const Home = () => {
           que combina consigo.
         </h6>
       </Header>
-      <Button
+      <StyledButton
         label="Responder"
         intent={ButtonTypes.PRIMARY}
         onClick={() => navigate("/quiz")}

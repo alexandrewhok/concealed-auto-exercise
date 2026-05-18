@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const NavbarContainer = styled.nav`
-  width: 100%;
   padding: 20px 24px;
   display: flex;
   align-items: center;

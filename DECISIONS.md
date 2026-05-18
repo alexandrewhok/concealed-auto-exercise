@@ -7,9 +7,75 @@
 - Always using arrow functions and destructure of the props (if used) for better code reading and understanding.
 - Using react-router-dom with a root layout (App) and nested routes.
 
+## Question Improvements
+
+### Mileage: weekly → yearly distance
+The original question asked about weekly distance (up to 200 km / 200–500 km / 500+ km). This was changed to yearly distance (up to 10 000 km / 10 000–20 000 km / 20 000+ km) because Portuguese buyers naturally think in annual terms — it matches how mileage is displayed in car listings and how insurance premiums are quoted. The ranges map to the same three usage profiles: urban, mixed, and long-distance.
+
+### Number of passengers: two → three options
+The original question had only two options (1–2 / 3 or more). A middle option (3–4 pessoas) was added to allow more granular matching. With only two options, all families and groups were treated identically regardless of whether they needed a mid-size or a large car. The three options now map directly to the `compact`/`solo-couple`, `mid-size`, and `family`/`large` tag groups.
+
+### Luggage question now contributes to matching
+Originally, "rarely" and "sometimes" answers to the luggage question produced no tags, making the question useless for scoring. Each option now maps to tags that reinforce the size signal: rarely → `solo-couple`, `compact`; sometimes → `mid-size`, `large`; often → `cargo`, `large`. Tags can repeat across answers — the scoring engine counts each occurrence, so repeated signals (e.g., both passengers and luggage pointing to `compact`) push the right cars higher and act as a natural tiebreaker.
+
+### Added fuel type question
+A seventh question was added — "Que tipo de combustível preferes?" with options Gasolina / Diesel / Indiferente. Fuel type is a hard filter, not a scoring signal (see Matching Engine section below). "Indiferente" skips the filter entirely, leaving all fuel types in the pool.
+
+## Matching Engine
+
+The matching runs in two stages after the user submits the quiz.
+
+### Stage 1 — Hard filters
+Hard filters eliminate cars that cannot satisfy a hard requirement. A car that fails a filter never appears in results, regardless of how well it scores on other dimensions.
+
+Three hard filters are applied in order:
+1. **Budget** — removes cars where `price_eur > budget` (only applied if the user entered a value above zero)
+2. **Gearbox** — if the user picked Manual or Automática, only cars with the corresponding tag survive; Indiferente skips this filter
+3. **Fuel** — if the user picked Gasolina or Diesel, only cars with the matching `fuel` field survive; Indiferente skips this filter
+
+Filters stack: picking Diesel + Manual leaves only diesel manual cars in the pool before scoring begins.
+
+### Stage 2 — Tag scoring with contradiction penalty
+Each answer (except budget, gearbox, and fuel, which are handled by filters) maps to two tag lists: desired tags and contradiction tags.
+
+**Desired tags** — tags that a good match should have. Tags can repeat across answers: if both the passengers question and the luggage question map to `compact`, a compact car scores +2 from those two answers combined. This means stronger agreement across questions amplifies the signal naturally.
+
+| Answer | Desired tags |
+|---|---|
+| people 1–2 | `compact`, `solo-couple` |
+| people 3–4 | `mid-size` |
+| people 4+ | `family`, `large` |
+| distance 0–10 000 km | `urban` |
+| distance 10 000–20 000 km | `mixed` |
+| distance 20 000+ km | `long-distance` |
+| luggage rarely | `solo-couple`, `compact` |
+| luggage sometimes | `mid-size`, `large` |
+| luggage often | `cargo`, `large` |
+| priority economy | `economy` |
+| priority comfort | `comfort`, `premium` |
+| priority balanced | `mixed` |
+
+**Contradiction tags** — tags that signal a clear mismatch. Each contradiction tag found on a car subtracts 1 from its score, pushing clearly wrong cars below cars that are merely neutral.
+
+| Answer | Contradiction tags |
+|---|---|
+| people 1–2 | `family`, `large` |
+| people 3–4 | `solo-couple` |
+| people 4+ | `compact`, `solo-couple` |
+| distance 0–10 000 km | `long-distance` |
+| distance 20 000+ km | `urban` |
+| luggage rarely | `cargo` |
+| priority economy | `premium` |
+| priority comfort | `economy` |
+
+**Final score** = number of desired tag matches − number of contradiction tag matches
+
+Cars are sorted by score descending. The top 3 are returned as recommendations.
+
 ## Deployment Workflow
 - Configured automatic deployments using Netlify connected to the GitHub repository.
 - Every push to the main branch triggers a build (`pnpm build`) and deploy to production.
 - Pull Requests generate preview deployments, allowing quick validation of UI changes.
 - This setup ensures fast feedback loops and mirrors a real-world CI/CD workflow.
 - Added a Netlify `_redirects` file to support client-side routing. Without this, direct navigation to routes like `/results` would fail on Netlify.
+

@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import Button from "../../components/Button";
 
 export const Wrapper = styled.div`
   display: flex;
@@ -16,4 +17,8 @@ export const Header = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+`;
+
+export const StyledButton = styled(Button)`
+  padding: 12px 20px;
 `;
