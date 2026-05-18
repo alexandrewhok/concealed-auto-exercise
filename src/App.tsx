@@ -1,3 +1,4 @@
+import { Outlet } from "react-router-dom";
 import { GlobalStyle } from "./styles/global";
 import { Reset } from "./styles/reset";
 
@@ -6,7 +7,7 @@ function App() {
     <>
       <Reset />
       <GlobalStyle />
-      <h1>Home</h1>
+      <Outlet />
     </>
   );
 }
