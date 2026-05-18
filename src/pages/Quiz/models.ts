@@ -8,6 +8,7 @@ export type Question = {
   title: string;
   options: QuestionOption[];
   type: "single-choice" | "select";
+  placeholder?: string;
 };
 
 export type QuizAnswers = {

@@ -5,6 +5,7 @@ export const QUESTIONS: Question[] = [
     id: "budget",
     title: "Qual é o teu orçamento máximo antes de impostos?",
     type: "select",
+    placeholder: "Preço até",
     options: [
       { value: "10000", label: "0 – 10 000 EUR" },
       { value: "12000", label: "12 000 EUR" },
@@ -20,6 +21,7 @@ export const QUESTIONS: Question[] = [
     id: "maxMileage",
     title: "Número máximo de quilómetros",
     type: "select",
+    placeholder: "Quilómetros até",
     options: [
       { value: "10000", label: "Até 10 000 km" },
       { value: "20000", label: "Até 20 000 km" },

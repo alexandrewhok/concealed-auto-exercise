@@ -25,7 +25,7 @@ const QuestionBlock = (props: QuestionBlockProps) => {
 
       {question.type === "select" && (
         <Dropdown
-          placeholder="Preço até"
+          placeholder={question.placeholder ?? ""}
           options={question.options}
           value={selectedValue}
           onChange={(value) => onSelect?.(value)}
