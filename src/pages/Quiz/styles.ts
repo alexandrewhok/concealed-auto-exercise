@@ -6,10 +6,16 @@ export const Wrapper = styled.div`
   height: calc(100vh - 80px);
 `;
 
-export const Content = styled.div`
+export const ScrollArea = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 40px 292px;
+`;
+
+export const Content = styled.div`
+  padding: 40px 24px;
+  max-width: 760px;
+  width: 100%;
+  margin: 0 auto;
 `;
 
 export const Title = styled.h3`

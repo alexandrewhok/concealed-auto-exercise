@@ -20,5 +20,6 @@ export const Header = styled.div`
 `;
 
 export const StyledButton = styled(Button)`
+  font-size: 16px;
   padding: 12px 20px;
 `;

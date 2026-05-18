@@ -12,4 +12,5 @@ export interface ButtonProps {
   intent: ButtonTypes;
   disabled?: boolean;
   onClick?: () => void;
+  className?: string;
 }

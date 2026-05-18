@@ -5,12 +5,16 @@ import QuestionBlock from "../../components/QuestionBlock";
 import { useQuizStore } from "../../store/quizStore";
 import type { QuizAnswers } from "./models";
 import { QUESTIONS } from "./constants";
-import { Content, Title, Wrapper } from "./styles";
+import { Content, ScrollArea, Title, Wrapper } from "./styles";
+
+const MANDATORY_IDS = QUESTIONS.filter((q) => q.id !== "budget").map((q) => q.id);
 
 const Quiz = () => {
   const navigate = useNavigate();
   const setAnswer = useQuizStore((s) => s.setAnswer);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+
+  const allAnswered = MANDATORY_IDS.every((id) => answers[id] !== undefined);
 
   const handleSelect = (questionId: string, value: string) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
@@ -29,20 +33,23 @@ const Quiz = () => {
 
   return (
     <Wrapper>
-      <Content>
-        <Title>Questionário</Title>
-        {QUESTIONS.map((q) => (
-          <QuestionBlock
-            key={q.id}
-            question={q}
-            selectedValue={answers[q.id]}
-            onSelect={(value) => handleSelect(q.id, value)}
-          />
-        ))}
-      </Content>
+      <ScrollArea>
+        <Content>
+          <Title>Questionário</Title>
+          {QUESTIONS.map((q) => (
+            <QuestionBlock
+              key={q.id}
+              question={q}
+              selectedValue={answers[q.id]}
+              onSelect={(value) => handleSelect(q.id, value)}
+            />
+          ))}
+        </Content>
+      </ScrollArea>
 
       <ActionFooter
         confirmLabel="Ver recomendações"
+        confirmDisabled={!allAnswered}
         onCancel={() => navigate("/")}
         onConfirm={handleSubmit}
       />

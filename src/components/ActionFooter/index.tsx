@@ -4,7 +4,7 @@ import type { ActionFooterProps } from "./models";
 import { Footer } from "./styles";
 
 const ActionFooter = (props: ActionFooterProps) => {
-  const { cancelLabel = "Cancelar", confirmLabel, onCancel, onConfirm } = props;
+  const { cancelLabel = "Cancelar", confirmLabel, confirmDisabled, onCancel, onConfirm } = props;
 
   return (
     <Footer>
@@ -16,6 +16,7 @@ const ActionFooter = (props: ActionFooterProps) => {
       <Button
         label={confirmLabel}
         intent={ButtonTypes.PRIMARY}
+        disabled={confirmDisabled}
         onClick={onConfirm}
       />
     </Footer>
