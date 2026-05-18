@@ -2,6 +2,7 @@
 
 ## Project Setup
 - Chose Vite + React + TypeScript for speed and simplicity.
+- Used pnpm as the package manager over npm or yarn. pnpm is significantly faster on installs, uses a content-addressable store that avoids duplicate packages, and has a smaller footprint — a practical fit for a time-constrained project where setup speed matters.
 - Added styled-components with a reset from Eric Meyer Reset and global styles, both for personal preference and for better control over design consistency. This keeps styling colocated, predictable and isolated from global CSS leaks.
 - Structured pages using a folder-per-page pattern with index.tsx entry points, which is my usual approach for scalable React projects. It keeps imports clean, allows each page to grow independently and avoids naming collisions.
 - Always using arrow functions and destructure of the props (if used) for better code reading and understanding.
@@ -124,7 +125,11 @@ Claude Code was introduced as a technical extension once the base application wa
 - **Results component** — the base card structure was built manually, then Claude Code was used to iterate on layout refinements and detail adjustments based on explicit feedback.
 - **Empty state behaviour** — when no results are found, the decision to return the user to the quiz with their answers already filled in was deliberately specified. The intent was to let the user adjust specific filters without having to restart the form from scratch — a UX detail that was manually designed and then implemented through directed instruction.
 
+Claude Code also rewrote the README — the default Vite boilerplate was replaced with a project-specific document covering the app's purpose, stack, how to run it, project structure, a plain-English summary of the matching flow, and a reference to this file. The content and structure were directed; the writing was delegated.
+
 Claude Code also assisted in one specific commit organisation task: at a point where ~25 files had accumulated as uncommitted changes, it was asked to split them into smaller, focused commits grouped by concern (UI vs logic vs documentation). This follows standard good practice — smaller commits scoped to a single responsibility make rollbacks surgical rather than destructive.
+
+Claude Code also assisted in completing this DECISIONS.md file. The content, reasoning, and specific text for each section were provided directly — decisions about architecture, question design, matching logic, UI approach, and time trade-offs were all authored and directed manually. Claude Code structured and wrote the final document based on those indications.
 
 AI was deliberately not used for architectural decisions, the initial project setup, the design system, or anything where the reasoning behind the choice mattered as much as the output itself.
 
