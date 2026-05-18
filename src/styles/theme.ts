@@ -6,6 +6,7 @@ const theme = {
     disabledBg: "#D1D5DB",
     disabledText: "#9CA3AF",
     base: "#080E1F",
+    surface: "#0D1535",
 
     intents: {
       primary: {
@@ -32,8 +33,8 @@ const theme = {
     h3: "36px",
     h4: "30px",
     h5: "24px",
-    h6: "20px",
-    p: "16px",
+    h6: "18px",
+    p: "12px",
   },
   fontFamily: "Inter, system-ui, sans-serif",
 };
