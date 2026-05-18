@@ -1,12 +1,10 @@
 import { Outlet } from "react-router-dom";
-import { GlobalStyle } from "./styles/global";
-import { Reset } from "./styles/reset";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
     <>
-      <Reset />
-      <GlobalStyle />
+      <Navbar />
       <Outlet />
     </>
   );
